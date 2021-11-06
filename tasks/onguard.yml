@@ -1,0 +1,53 @@
+---
+- name: Install packages required by onguard installer
+  become: true
+  apt:
+    pkg:
+      # - libgnome-keyring0
+      # - libnm-glib-vpn1
+      # - libnm-glib4
+      - libqt5core5a
+      - libqt5gui5 
+      - gdebi
+
+- name: Create onguard extract directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ download_to }}"
+    - "{{ onguard_extract }}"
+
+- name: Download onguard package
+  become: no
+  command: aws s3 cp {{ onguard_s3_uri }} {{ onguard_extract }} --quiet
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  register: ogdl
+  args:
+    creates: "{{ onguard_extract }}/{{ onguard_file }}"
+
+- name: Download output
+  debug:
+    msg: "onguard bucket: {{ ogdl.stdout }}"
+
+- name: Extract onguard
+  unarchive:
+    src: "{{ onguard_extract }}/{{ onguard_file }}"
+    dest: "{{ onguard_extract }}"
+    remote_src: yes
+
+- name: Run onguard installer
+  become: yes
+  command: ./clearpass-onguard-installer-6.8.9.120997-ubuntu-x86_64 -y
+  args:
+    chdir: "{{ onguard_extract }}"
+  register: oginst
+  changed_when: oginst.rc == 0
+  # the installer will fail in docker because of a non-existent dir
+
+- name: Installer output
+  debug:
+    msg: "onguard installer: {{ oginst.stdout }}"

@@ -1,0 +1,55 @@
+---
+# provide the AWS credentials used to access the S3 bucket
+aws_access_key_id: "SET_ME"
+aws_secret_access_key: "SET_ME"
+
+# if disabled the installer files must already exist on the host
+enable_s3_download: true
+# enable crowdstrike install
+enable_crowdstrike: true
+# enable onguard install
+enable_onguard: true
+# enable lansweeper install
+enable_lansweeper: true
+
+# bucket name
+download_bucket: "SET_ME"
+
+# ansible creates a working directory for the downloads for each app
+# example: {{ download_to }}/anyconnect/
+download_to: "{{ ansible_env.HOME }}/.anyconnect_downloads"
+anyconnect_extract: "{{ download_to }}/anyconnect"
+
+# path to the  installer in S3
+anyconnect_s3_path: anyconnect/linux/x86_64
+# installer file name
+anyconnect_file: anyconnect-linux64-4.9.06037-predeploy-k9.tar.gz
+# strip after version: anyconnect-linux64-4.9.06037
+anyconnect_installer_base: "{{ anyconnect_file.split('-predeploy-') | first }}"
+# run the installer from this dir
+anyconnect_installer_chdir: "{{ anyconnect_extract }}/{{ anyconnect_installer_base }}/vpn"
+# s3 uri
+anyconnect_s3_uri: "s3://{{ download_bucket }}/{{ anyconnect_s3_path }}/{{ anyconnect_file }}"
+
+onguard_extract: "{{ download_to }}/onguard"
+# path to the  installer in S3
+onguard_s3_path: ClearpassOnguard/linux
+# installer file name
+onguard_file: ClearPassOnGuardInstall.tar.gz
+onguard_s3_uri: "s3://{{ download_bucket }}/{{ onguard_s3_path }}/{{ onguard_file }}"
+
+crowdstrike_extract: "{{ download_to }}/crowdstrike"
+# path to the  installer in S3
+crowdstrike_s3_path: crowdstrike/linux
+# installer file name
+crowdstrike_file: falcon-sensor_6.24.0-12104_amd64.deb
+crowdstrike_s3_uri: "s3://{{ download_bucket }}/{{ crowdstrike_s3_path }}/{{ crowdstrike_file }}"
+
+lansweeper_extract: "{{ download_to }}/lansweeper"
+# path to the  installer in S3
+lansweeper_s3_path: lansweeper/linux
+# installer file name
+lansweeper_file: LsAgent-linux-x64_8.4.100.35.run
+lansweeper_s3_uri: "s3://{{ download_bucket }}/{{ lansweeper_s3_path }}/{{ lansweeper_file }}"
+lansweeper_agentkey: 'SET_ME'
+lansweeper_port: '9524'

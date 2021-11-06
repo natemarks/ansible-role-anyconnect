@@ -1,0 +1,34 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .
+platforms:
+  - name: ubuntu20.04-all
+    image: geerlingguy/docker-ubuntu2004-ansible:latest
+    command_handling: correct
+    privileged: false
+    pre_build_image: true
+  - name: ubuntu20.04-only-ac
+    image: geerlingguy/docker-ubuntu2004-ansible:latest
+    command_handling: correct
+    privileged: false
+    pre_build_image: true
+provisioner:
+  name: ansible
+  ansible_args:
+    - --extra-vars=aws_access_key_id=${AWS_ACCESS_KEY_ID}
+    - --extra-vars=aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
+    - --extra-vars=download_bucket=${DOWNLOAD_BUCKET}
+    - --extra-vars=lansweeper_agentkey=${LANSWEEPER_AGENTKEY}
+  inventory:
+    links:
+      hosts: hosts
+      group_vars: group_vars/
+      host_vars: host_vars/
+verifier:
+  name: ansible

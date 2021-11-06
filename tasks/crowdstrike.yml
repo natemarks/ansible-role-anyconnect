@@ -1,0 +1,36 @@
+---
+- name: Create crowdstrike extract directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ download_to }}"
+    - "{{ crowdstrike_extract }}"
+
+- name: Download crowdstrike package
+  become: no
+  command: aws s3 cp {{ crowdstrike_s3_uri }} {{ crowdstrike_extract }} --quiet
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  register: csdl
+  args:
+    creates: "{{ crowdstrike_extract }}/{{ crowdstrike_file }}"
+
+- name: Download output
+  debug:
+    msg: "crowdstrike bucket: {{ csdl.stdout }}"
+
+- name: Check if crowdstrike is installed
+  command: dpkg-query -W falcon-sensor*
+  register: csinst
+  failed_when: csinst.rc > 1
+  changed_when: false
+
+- name: Install crowstrike
+  # installer won't run in docker
+  tags: molecule-notest
+  become: yes
+  apt: deb="{{ crowdstrike_extract }}/{{ crowdstrike_file }}"
+  when: csinst.rc != 0

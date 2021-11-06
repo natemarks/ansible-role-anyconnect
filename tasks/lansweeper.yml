@@ -1,0 +1,42 @@
+---
+- name: Create lansweeper extract directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ download_to }}"
+    - "{{ lansweeper_extract }}"
+
+- name: Download lansweeper package
+  become: no
+  command: aws s3 cp {{ lansweeper_s3_uri }} {{ lansweeper_extract }} --quiet
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  register: lsdl
+  args:
+    creates: "{{ lansweeper_extract }}/{{ lansweeper_file }}"
+
+- name: Download output
+  debug:
+    msg: "lansweeper bucket: {{ lsdl.stdout }}"
+
+- name: Make lansweeper installer executable
+  ansible.builtin.file:
+    path: "{{ lansweeper_extract }}/{{ lansweeper_file }}"
+    mode: '0755'
+
+- name: Run lansweeper installer
+  become: yes
+  command: "./{{ lansweeper_file }} --port {{ lansweeper_port }} --agentkey {{ lansweeper_agentkey }} --mode unattended"
+  args:
+    chdir: "{{ lansweeper_extract }}"
+    creates: /opt/LansweeperAgent
+  register: lsinst
+  changed_when: lsinst.rc == 0
+  # the installer will fail in docker because of a non-existent dir
+
+- name: Installer output
+  debug:
+    msg: "lansweeper installer: {{ lsinst.stdout }}"

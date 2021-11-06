@@ -1,0 +1,57 @@
+---
+- name: Create anyconnect extract directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ download_to }}"
+    - "{{ anyconnect_extract }}"
+
+- name: Download anyconnect package
+  become: no
+  command: aws s3 cp {{ anyconnect_s3_uri }} {{ anyconnect_extract }} --quiet
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  register: acdl
+  args:
+    creates: "{{ anyconnect_extract }}/{{ anyconnect_file }}"
+
+- name: Download output
+  debug:
+    msg: "anyconnect bucket: {{ acdl.stdout }}"
+
+- name: Extract Anyconnect
+  unarchive:
+    src: "{{ anyconnect_extract }}/{{ anyconnect_file }}"
+    dest: "{{ anyconnect_extract }}"
+    remote_src: yes
+
+- name: Run anyconnect installer
+  become: yes
+  # installer won't run in docker
+  tags: molecule-notest
+  command: ./vpn_install.sh
+  args:
+    chdir: "{{ anyconnect_installer_chdir }}"
+    stdin: y
+    creates: /opt/cisco/anyconnect/bin/vpnui
+  register: acinst
+  
+  # the installer will fail in docker because of a non-existent dir
+
+- name: Installer output
+  # installer won't run in docker
+  tags: molecule-notest
+  debug:
+    msg: "anyconnect installer: {{ acinst.stdout }}"
+
+- name: Deploy anyconnect profile Eng_Full_Tunnel_Profile.xml
+  # installer won't run in docker
+  tags: molecule-notest
+  become: yes
+  ansible.builtin.template:
+    src: templates/Eng_Full_Tunnel_Profile.xml
+    dest: '/opt/cisco/anyconnect/profile/Eng_Full_Tunnel_Profile.xml'
+    mode: '0664'
