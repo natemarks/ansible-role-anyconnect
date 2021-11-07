@@ -3,7 +3,7 @@
 # Determine this makefile's path.
 # Be sure to place this BEFORE `include` directives, if any.
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
-VERSION := 0.0.1
+VERSION := 0.0.2
 COMMIT := $(shell git describe --always --long --dirty)
 
 help: ## Show this help.
