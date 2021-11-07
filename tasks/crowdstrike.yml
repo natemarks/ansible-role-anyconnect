@@ -34,3 +34,9 @@
   become: yes
   apt: deb="{{ crowdstrike_extract }}/{{ crowdstrike_file }}"
   when: csinst.rc != 0
+
+- name: Configure crowdstrike cid
+  become: yes
+  command: /opt/CrowdStrike/falconctl -s --cid={{ crowdstrike_cid }}
+  register: cscid
+  changed_when: false

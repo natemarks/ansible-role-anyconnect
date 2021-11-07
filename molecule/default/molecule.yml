@@ -25,6 +25,7 @@ provisioner:
     - --extra-vars=aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
     - --extra-vars=download_bucket=${DOWNLOAD_BUCKET}
     - --extra-vars=lansweeper_agentkey=${LANSWEEPER_AGENTKEY}
+    - --extra-vars=crowdstrike_cid=${CROWDSTRIKE_CID}
   inventory:
     links:
       hosts: hosts

@@ -44,6 +44,7 @@ crowdstrike_s3_path: crowdstrike/linux
 # installer file name
 crowdstrike_file: falcon-sensor_6.24.0-12104_amd64.deb
 crowdstrike_s3_uri: "s3://{{ download_bucket }}/{{ crowdstrike_s3_path }}/{{ crowdstrike_file }}"
+crowdstrike_cid: 'SET_ME'
 
 lansweeper_extract: "{{ download_to }}/lansweeper"
 # path to the  installer in S3
