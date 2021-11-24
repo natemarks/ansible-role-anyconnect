@@ -1,7 +1,7 @@
 ---
 - name: Create installation config file
   ansible.builtin.template:
-    src: templates/Eng_Full_Tunnel_Profile.xml
+    src: templates/code42.deployment.properties
     dest: '/tmp/code42.deployment.properties'
     mode: '0664'
  
