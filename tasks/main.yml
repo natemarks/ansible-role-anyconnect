@@ -16,3 +16,7 @@
 - name: Conditionally include lansweeper
   include_tasks: lansweeper.yml
   when: enable_lansweeper | bool
+
+- name: Conditionally include code42
+  include_tasks: code42.yml
+  when: enable_code42 | bool

@@ -32,7 +32,7 @@ molecule-test: ## Run molecule
 	( \
 	   . .venv/bin/activate; \
 	   pip install ansible yamllint ansible-lint molecule[docker]; \
-	   molecule test; \
+	   . ./.env && molecule test; \
     )
 
 shellcheck: ## execute shellcheck

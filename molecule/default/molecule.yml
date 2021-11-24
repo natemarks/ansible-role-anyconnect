@@ -26,6 +26,10 @@ provisioner:
     - --extra-vars=download_bucket=${DOWNLOAD_BUCKET}
     - --extra-vars=lansweeper_agentkey=${LANSWEEPER_AGENTKEY}
     - --extra-vars=crowdstrike_cid=${CROWDSTRIKE_CID}
+    - --extra-vars=code42_deployment_url=${CODE42_DEPLOYMENT_URL}
+    - --extra-vars=code42_deployment_policy_token=${CODE42_DEPLOYMENT_POLICY_TOKEN}
+    - --extra-vars=code42_deployment_secret=${CODE42_DEPLOYMENT_SECRET}
+    - --extra-vars=code42_username=${CODE42_USERNAME}
   inventory:
     links:
       hosts: hosts

@@ -1,0 +1,33 @@
+---
+- name: Create installation config file
+  ansible.builtin.template:
+    src: templates/Eng_Full_Tunnel_Profile.xml
+    dest: '/tmp/code42.deployment.properties'
+    mode: '0664'
+ 
+- name: Create code42 extract directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ download_to }}"
+    - "{{ code42_extract }}"
+
+- name: Download code42 package
+  become: no
+  command: aws s3 cp {{ code42_s3_uri }} {{ code42_extract }} --quiet
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+  register: c42dl
+  args:
+    creates: "{{ code42_extract }}/{{ code42_file }}"
+
+- name: Download output
+  debug:
+    msg: "code42 bucket: {{ c42dl.stdout }}"
+
+- name: Install a .deb package from the internet
+  apt:
+    deb: "{{ code42_extract }}/{{ code42_file }}"

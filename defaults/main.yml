@@ -11,6 +11,8 @@ enable_crowdstrike: true
 enable_onguard: true
 # enable lansweeper install
 enable_lansweeper: true
+# enable code42 install
+enable_code42: true
 
 # bucket name
 download_bucket: "SET_ME"
@@ -54,3 +56,14 @@ lansweeper_file: LsAgent-linux-x64_8.4.100.35.run
 lansweeper_s3_uri: "s3://{{ download_bucket }}/{{ lansweeper_s3_path }}/{{ lansweeper_file }}"
 lansweeper_agentkey: 'SET_ME'
 lansweeper_port: '9524'
+
+code42_extract: "{{ download_to }}/code42"
+# path to the  installer in S3
+code42_s3_path: code42/linux
+# installer file name
+code42_file: code42-aat_1.2.9-7+ubuntu2004_amd64.deb
+code42_s3_uri: "s3://{{ download_bucket }}/{{ code42_s3_path }}/{{ code42_file }}"
+code42_deployment_url: ''
+code42_deployment_policy_token: ''
+code42_deployment_secret: ''
+code42_username: ''
