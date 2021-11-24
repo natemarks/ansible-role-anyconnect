@@ -29,5 +29,6 @@
     msg: "code42 bucket: {{ c42dl.stdout }}"
 
 - name: Install a .deb package from the internet
+  become: yes
   apt:
     deb: "{{ code42_extract }}/{{ code42_file }}"
