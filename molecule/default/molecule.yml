@@ -29,7 +29,7 @@ provisioner:
     - --extra-vars=code42_deployment_url=${CODE42_DEPLOYMENT_URL}
     - --extra-vars=code42_deployment_policy_token=${CODE42_DEPLOYMENT_POLICY_TOKEN}
     - --extra-vars=code42_deployment_secret=${CODE42_DEPLOYMENT_SECRET}
-    - --extra-vars=code42_username=${CODE42_USERNAME}
+    - --extra-vars=user_email=${USER_EMAIL}
   inventory:
     links:
       hosts: hosts
