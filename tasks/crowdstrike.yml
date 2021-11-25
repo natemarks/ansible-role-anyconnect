@@ -42,3 +42,4 @@
   command: /opt/CrowdStrike/falconctl -s --cid={{ crowdstrike_cid }}
   register: cscid
   changed_when: false
+  when: csinst.rc != 0

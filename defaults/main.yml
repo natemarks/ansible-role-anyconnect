@@ -66,4 +66,3 @@ code42_s3_uri: "s3://{{ download_bucket }}/{{ code42_s3_path }}/{{ code42_file }
 code42_deployment_url: ''
 code42_deployment_policy_token: ''
 code42_deployment_secret: ''
-

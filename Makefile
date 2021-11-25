@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := help
+DEFAULT_BRANCH := main
 
 # Determine this makefile's path.
 # Be sure to place this BEFORE `include` directives, if any.
@@ -52,4 +53,21 @@ else
 endif
 
 static: shellcheck molecule-test
+
+git-status: ## require status is clean so we can use undo_edits to put things back
+	@status=$$(git status --porcelain); \
+	if [ ! -z "$${status}" ]; \
+	then \
+		echo "Error - working directory is dirty. Commit those changes!"; \
+		exit 1; \
+	fi
+
+undo_edits: ## undo staged and unstaged change. ohmyzsh alias: grhh
+	git reset --hard
+
+
+rebase: git-status ## rebase current feature branch on to the default branch
+	git fetch && git rebase origin/$(DEFAULT_BRANCH)
+
+
 .PHONY: run build release static upload vet lint
