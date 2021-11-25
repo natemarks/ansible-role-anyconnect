@@ -28,13 +28,13 @@
   debug:
     msg: 'code42 bucket: {{ c42dl.stdout }}'
 
-- name: check code42 isntall dir
+- name: check code42 install dir
   stat:
     path: /opt/code42-aat
   register: code42_installed
 
-- name: Install a .deb package from the internet
+- name: Install code42 package
   become: yes
-  when: ! code42_installed.stat.exists
+  when: not code42_installed.stat.exists
   apt:
     deb: '{{ code42_extract }}/{{ code42_file }}'
