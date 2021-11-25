@@ -44,6 +44,7 @@
   command: ./clearpass-onguard-installer-6.8.9.120997-ubuntu-x86_64 -y
   args:
     chdir: "{{ onguard_extract }}"
+    creates: "/usr/bin/clearpass-onguard"
   register: oginst
   changed_when: oginst.rc == 0
   # the installer will fail in docker because of a non-existent dir
