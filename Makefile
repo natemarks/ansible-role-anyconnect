@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := help
+DEFAULT_BRANCH := main
 
 # Determine this makefile's path.
 # Be sure to place this BEFORE `include` directives, if any.
